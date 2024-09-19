@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Capture GPS Coordinates</title>
+</head>
+<body>
+    <h1>Capture GPS Coordinates</h1>
+    <button id="getLocationBtn">Get Location</button>
+    <p id="status"></p>
+
+    <script>
+        document.getElementById("getLocationBtn").addEventListener("click", getLocation);
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                document.getElementById("status").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+
+            // Submit the coordinates to the Google Form
+            var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScCqYXghljvDvdBHj72lMdQAvJAiaHbDUoR-BwgcCqFCki3_w/formResponse";
+            var formData = new FormData();
+            formData.append("entry.1234567890", latitude); // Replace with the actual entry ID for latitude
+            formData.append("entry.0987654321", longitude); // Replace with the actual entry ID for longitude
+
+            fetch(formUrl, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("status").innerHTML = "Location submitted successfully!";
+            })
+            .catch(error => {
+                document.getElementById("status").innerHTML = "Error submitting location.";
+            });
+        }
+    </script>
+</body>
+</html>
